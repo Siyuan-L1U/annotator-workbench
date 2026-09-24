@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>标注组员工作台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/theme.css?v=zh6">
+  <link rel="stylesheet" href="/static/styles.css?v=zh6">
+</head>
+<body>
+  <div class="bg"></div>
+  <section id="loginView" class="login-view">
+    <form id="loginForm" class="login-card">
+      <p class="eyebrow">Workbench</p>
+      <h1>标注组员工作台</h1>
+      <label>账号 <input id="loginUser" name="username" autocomplete="username" value="admin" required></label>
+      <label>密码 <input id="loginPass" name="password" type="password" autocomplete="current-password" value="admin123" required></label>
+      <button class="btn" type="submit">登录</button>
+      <p class="meta" style="margin:.4rem 0 0">演示账号已填好，直接点「登录」（admin / admin123）</p>
+      <p class="login-err" id="loginErr"></p>
+    </form>
+  </section>
+  <div id="appView" class="hidden">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Workbench</p>
+        <h1>标注组员工作台</h1>
+      </div>
+      <div class="top-actions">
+        <span class="who" id="whoLabel"></span>
+        <button class="btn ghost" id="refreshBtn" type="button">刷新</button>
+        <button class="btn admin-only" id="manageBtn" type="button">管理</button>
+        <button class="btn ghost" id="pwdBtn" type="button">改密</button>
+        <button class="btn ghost" id="logoutBtn" type="button">退出</button>
+      </div>
+    </header>
+    <main>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="hub" type="button" id="tabHub">工作台</button>
+        <button class="tab admin-only group-admin-ok" data-tab="dayview" type="button">日期面板</button>
+        <button class="tab admin-only" data-tab="board" type="button">任务分配</button>
+        <button class="tab intern-only" data-tab="today" type="button" id="tabToday">今日登记</button>
+        <button class="tab" data-tab="attendance" type="button" id="tabAttendance">出勤</button>
+        <button class="tab intern-only" data-tab="mine" type="button" id="tabMine">我的进度</button>
+        <button class="tab" data-tab="projects" type="button">项目总量</button>
+        <button class="tab intern-only" data-tab="workload" type="button" id="tabWorkload">工作记录</button>
+        <button class="tab admin-only" data-tab="projmgmt" type="button">项目管理</button>
+      </nav>
+      <section class="panel active" id="panel-hub"></section>
+      <section class="panel" id="panel-dayview"></section>
+      <section class="panel" id="panel-board"></section>
+      <section class="panel" id="panel-attendance"></section>
+      <section class="panel" id="panel-today"></section>
+      <section class="panel" id="panel-mine"></section>
+      <section class="panel" id="panel-projects"></section>
+      <section class="panel" id="panel-workload"></section>
+      <section class="panel" id="panel-projmgmt"></section>
+    </main>
+  </div>
+  <dialog id="manageDialog">
+    <form method="dialog" class="dlg">
+      <header>
+        <h2>管理</h2>
+        <button class="btn ghost" type="submit">关闭</button>
+      </header>
+      <div class="dlg-grid">
+        <fieldset>
+          <legend>账号</legend>
+          <p class="hint">选身份后填写姓名、登录账号、密码。组员可登记与看进度；组内管理可只读查看本组出勤与任务完成；线上管理可只读查看 A/B 组全部 online；管理员可看日期面板、任务分配等。</p>
+          <label class="field-label">身份
+            <select id="accRole">
+              <option value="intern" selected>组员</option>
+              <option value="admin">管理员</option>
+            </select>
+          </label>
+          <label class="pm-active" id="accAlsoWorkWrap" style="display:none;margin:.15rem 0">
+            <input type="checkbox" id="accAlsoWork">
+            管理员同时交任务（绑定同名组员身份）
+          </label>
+          <input id="newIntern" placeholder="姓名">
+          <label class="field-label" id="newTeamGroupWrap">分组
+            <select id="newTeamGroup">
+              <option value="" selected>未分组</option>
+              <option value="A">A组</option>
+              <option value="B">B组</option>
+            </select>
+          </label>
+          <label class="field-label" id="newWorkModeWrap">办公方式
+            <select id="newWorkMode">
+              <option value="online" selected>online</option>
+              <option value="onsite">onsite</option>
+            </select>
+          </label>
+          <label class="pm-active" id="accGroupAdminWrap" style="margin:.15rem 0">
+            <input type="checkbox" id="accGroupAdmin">
+            设为组内管理（可只读查看本组出勤与任务完成）
+          </label>
+          <input id="accUser" placeholder="登录账号">
+          <input id="accPass" type="password" placeholder="密码（至少4位）">
+          <button type="button" class="btn" id="addInternBtn">添加</button>
+          <div id="userList" class="user-list"></div>
+        </fieldset>
+      </div>
+      <p class="dlg-msg" id="dlgMsg"></p>
+    </form>
+  </dialog>
+  <dialog id="pwdDialog">
+    <form method="dialog" class="dlg">
+      <header>
+        <h2>修改密码</h2>
+        <button class="btn ghost" type="submit">关闭</button>
+      </header>
+      <div class="dlg-grid">
+        <fieldset>
+          <input id="oldPass" type="password" placeholder="原密码">
+          <input id="newPass" type="password" placeholder="新密码（至少4位）">
+          <button type="button" class="btn" id="savePwdBtn">保存</button>
+        </fieldset>
+      </div>
+      <p class="dlg-msg" id="pwdMsg"></p>
+    </form>
+  </dialog>
+  <dialog id="makeupDialog">
+    <form method="dialog" class="dlg">
+      <header>
+        <h2>补交</h2>
+        <button class="btn ghost" type="submit">关闭</button>
+      </header>
+      <div class="dlg-grid">
+        <fieldset>
+          <legend>忘了提交？补交过去的一天</legend>
+          <p class="hint">选日期 → 选项目 → 填完成量。最多补最近 60 天。</p>
+          <label class="field-label">日期
+            <input id="makeupDay" type="date">
+          </label>
+          <label class="field-label">项目
+            <select id="makeupProject"></select>
+          </label>
+          <div class="makeup-amount">
+            <label class="field-label">完成量
+              <input id="makeupDone" type="number" min="0" step="1" value="0">
+            </label>
+            <label class="field-label">单位
+              <select id="makeupUnit">
+                <option value="节">节</option>
+                <option value="条">条</option>
+              </select>
+            </label>
+          </div>
+          <p class="meta" id="makeupHint"></p>
+          <button type="button" class="btn" id="makeupSubmitBtn">提交补交</button>
+        </fieldset>
+      </div>
+      <p class="dlg-msg" id="makeupMsg"></p>
+    </form>
+  </dialog>
+  <script src="/static/app.js?v=zh6"></script>
+</body>
+</html>

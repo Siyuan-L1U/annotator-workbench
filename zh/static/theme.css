@@ -1,0 +1,52 @@
+/* ============================================================
+   主题色（改这里即可 / Edit this file to rebrand colors）
+   ------------------------------------------------------------
+   只需改下面这几组颜色，整站主色、背景光晕、按钮都会跟着变。
+   Only change the values below — buttons, glow, and accents follow.
+   ============================================================ */
+
+:root {
+  /* 主色 / Primary */
+  --ink: #14212b;
+  --muted: #6b7c89;
+  --line: rgba(20, 33, 43, 0.1);
+  --paper: rgba(255, 255, 255, 0.92);
+  --surface: #f4f8fb;
+
+  --accent: #2563eb;           /* 主按钮 / CTA blue */
+  --accent-deep: #1d4ed8;
+  --accent-soft: rgba(37, 99, 235, 0.12);
+  --accent-rgb: 37, 99, 235;   /* 用于半透明：rgba(var(--accent-rgb), 0.2) */
+
+  --teal: #0d9488;
+  --teal-soft: rgba(13, 148, 136, 0.14);
+  --gold: #64748b;
+  --good: #3d7a56;
+  --good-soft: rgba(61, 122, 86, 0.14);
+  --leave-bg: #e4e9ee;
+  --leave-ink: #6a7680;
+
+  /* 项目色块（可按需改） / Project tag palette */
+  --tag-0: rgba(147, 197, 253, 0.45);
+  --tag-1: rgba(96, 165, 250, 0.62);
+  --tag-2: rgba(37, 99, 235, 0.78);
+  --tag-3: #60a5fa;
+  --tag-4: #3b82f6;
+  --tag-5: #2563eb;
+  --tag-6: #1d4ed8;
+  --tag-7: #1e3a8a;
+
+  --shadow: 0 16px 40px rgba(var(--accent-rgb), 0.08);
+  --radius: 16px;
+  --font: "Plus Jakarta Sans", system-ui, sans-serif;
+  --display: "Outfit", system-ui, sans-serif;
+
+  /* 背景光晕 / Page wash */
+  --bg-glow-1: rgba(var(--accent-rgb), 0.12);
+  --bg-glow-2: rgba(13, 148, 136, 0.1);
+  --bg-glow-3: rgba(var(--accent-rgb), 0.06);
+  --bg-base-mid: #f0f6ff;
+  --bg-base-end: #e8f1fb;
+  --login-bar-start: #38bdf8;
+  --login-bar-end: var(--accent-deep);
+}

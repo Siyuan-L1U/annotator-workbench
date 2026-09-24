@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <title>Annotator Progress Workbench</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/theme.css?v=en7">
+  <link rel="stylesheet" href="/static/styles.css?v=en7">
+</head>
+<body>
+  <div class="bg"></div>
+  <section id="loginView" class="login-view">
+    <form id="loginForm" class="login-card">
+      <p class="eyebrow">Workbench</p>
+      <h1>Annotator Progress Workbench</h1>
+      <label>Username <input id="loginUser" name="username" autocomplete="username" value="admin" required></label>
+      <label>Password <input id="loginPass" name="password" type="password" autocomplete="current-password" value="admin123" required></label>
+      <button class="btn" type="submit">Sign in</button>
+      <p class="meta" style="margin:.4rem 0 0">Demo account is filled in — click Sign in (admin / admin123)</p>
+      <p class="login-err" id="loginErr"></p>
+    </form>
+  </section>
+  <div id="appView" class="hidden">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Workbench</p>
+        <h1>Annotator Progress Workbench</h1>
+      </div>
+      <div class="top-actions">
+        <span class="who" id="whoLabel"></span>
+        <button class="btn ghost" id="refreshBtn" type="button">Refresh</button>
+        <button class="btn admin-only" id="manageBtn" type="button">Manage</button>
+        <button class="btn ghost" id="pwdBtn" type="button">Password</button>
+        <button class="btn ghost" id="logoutBtn" type="button">Log out</button>
+      </div>
+    </header>
+    <main>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="hub" type="button" id="tabHub">Home</button>
+        <button class="tab admin-only group-admin-ok" data-tab="dayview" type="button">Day board</button>
+        <button class="tab admin-only" data-tab="board" type="button">Assignments</button>
+        <button class="tab intern-only" data-tab="today" type="button" id="tabToday">Today</button>
+        <button class="tab" data-tab="attendance" type="button" id="tabAttendance">Attendance</button>
+        <button class="tab intern-only" data-tab="mine" type="button" id="tabMine">My progress</button>
+        <button class="tab" data-tab="projects" type="button">Projects</button>
+        <button class="tab intern-only" data-tab="workload" type="button" id="tabWorkload">Work log</button>
+        <button class="tab admin-only" data-tab="projmgmt" type="button">Project admin</button>
+      </nav>
+      <section class="panel active" id="panel-hub"></section>
+      <section class="panel" id="panel-dayview"></section>
+      <section class="panel" id="panel-board"></section>
+      <section class="panel" id="panel-attendance"></section>
+      <section class="panel" id="panel-today"></section>
+      <section class="panel" id="panel-mine"></section>
+      <section class="panel" id="panel-projects"></section>
+      <section class="panel" id="panel-workload"></section>
+      <section class="panel" id="panel-projmgmt"></section>
+    </main>
+  </div>
+  <dialog id="manageDialog">
+    <form method="dialog" class="dlg">
+      <header>
+        <h2>Manage</h2>
+        <button class="btn ghost" type="submit">Close</button>
+      </header>
+      <div class="dlg-grid">
+        <fieldset>
+          <legend>Accounts</legend>
+          <p class="hint">Pick a role, then name / username / password. Annotators can log work; group leads read their team; online leads read all online members; admins manage the board.</p>
+          <label class="field-label">Role
+            <select id="accRole">
+              <option value="intern" selected>Annotator</option>
+              <option value="admin">Admin</option>
+            </select>
+          </label>
+          <label class="pm-active" id="accAlsoWorkWrap" style="display:none;margin:.15rem 0">
+            <input type="checkbox" id="accAlsoWork">
+            Admin also submits work (link same-name annotator profile)
+          </label>
+          <input id="newIntern" placeholder="Name">
+          <label class="field-label" id="newTeamGroupWrap">Team
+            <select id="newTeamGroup">
+              <option value="" selected>Unassigned</option>
+              <option value="A">Team A</option>
+              <option value="B">Team B</option>
+            </select>
+          </label>
+          <label class="field-label" id="newWorkModeWrap">Work mode
+            <select id="newWorkMode">
+              <option value="online" selected>online</option>
+              <option value="onsite">onsite</option>
+            </select>
+          </label>
+          <label class="pm-active" id="accGroupAdminWrap" style="margin:.15rem 0">
+            <input type="checkbox" id="accGroupAdmin">
+            Group lead (read-only team attendance & completion)
+          </label>
+          <input id="accUser" placeholder="Username">
+          <input id="accPass" type="password" placeholder="Password (min 4)">
+          <button type="button" class="btn" id="addInternBtn">Add</button>
+          <div id="userList" class="user-list"></div>
+        </fieldset>
+      </div>
+      <p class="dlg-msg" id="dlgMsg"></p>
+    </form>
+  </dialog>
+  <dialog id="pwdDialog">
+    <form method="dialog" class="dlg">
+      <header>
+        <h2>Change password</h2>
+        <button class="btn ghost" type="submit">Close</button>
+      </header>
+      <div class="dlg-grid">
+        <fieldset>
+          <input id="oldPass" type="password" placeholder="Current password">
+          <input id="newPass" type="password" placeholder="New password (min 4)">
+          <button type="button" class="btn" id="savePwdBtn">Save</button>
+        </fieldset>
+      </div>
+      <p class="dlg-msg" id="pwdMsg"></p>
+    </form>
+  </dialog>
+  <dialog id="makeupDialog">
+    <form method="dialog" class="dlg">
+      <header>
+        <h2>Makeup submit</h2>
+        <button class="btn ghost" type="submit">Close</button>
+      </header>
+      <div class="dlg-grid">
+        <fieldset>
+          <legend>Missed a day? Submit past work</legend>
+          <p class="hint">Pick a date → project → amount. Up to last 60 days.</p>
+          <label class="field-label">Date
+            <input id="makeupDay" type="date">
+          </label>
+          <label class="field-label">Project
+            <select id="makeupProject"></select>
+          </label>
+          <div class="makeup-amount">
+            <label class="field-label">Amount
+              <input id="makeupDone" type="number" min="0" step="1" value="0">
+            </label>
+            <label class="field-label">Unit
+              <select id="makeupUnit">
+                <option value="节">clips</option>
+                <option value="条">items</option>
+              </select>
+            </label>
+          </div>
+          <p class="meta" id="makeupHint"></p>
+          <button type="button" class="btn" id="makeupSubmitBtn">Submit makeup</button>
+        </fieldset>
+      </div>
+      <p class="dlg-msg" id="makeupMsg"></p>
+    </form>
+  </dialog>
+  <script src="/static/app.js?v=en7"></script>
+</body>
+</html>

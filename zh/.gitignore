@@ -1,0 +1,15 @@
+data/
+*.db
+*.db-*
+*.log
+snapshots/
+.venv/
+__pycache__/
+*.pyc
+*.pem
+.DS_Store
+*.bak
+
+# local exports
+出勤导出*.csv
+.出勤导出*
